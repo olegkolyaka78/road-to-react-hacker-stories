@@ -20,60 +20,57 @@ const App = () => {
     },
 ];
 
+const [searchTerm, setSearchTerm] = React.useState('React');
+
 const handleSearch = (event) => {
-  console.log(event.target.value);
+  setSearchTerm(event.target.value);
 };
 
-  return (
-      <div>
-        <h1>My Hacker Stories</h1>
-
-        <Search onSearch={handleSearch} />
-
-        <hr/>
-
-        <List list={stories} />
-      </div>
-  );
-}
-
-const Search = (props) => {
-  const [searchTerm, setSearchTerm] = React.useState('');
-
-  const handleChange = (event) => {
-    setSearchTerm(event.target.value);
-
-    props.onSearch(event);
-  };
+const searchedStories = stories.filter((story) =>
+  story.title.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
   return (
     <div>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" onChange={handleChange} />
+      <h1>My Hacker Stories</h1>
 
-      <p>
-        Searching for <strong>{searchTerm}</strong>.
-      </p>
-  </div>
+      <Search search={searchTerm} onSearch={handleSearch} />
+
+      <hr/>
+
+      <List list={searchedStories} />
+    </div>
   );
 }
 
-const List = (props) => (
-    <ul>
-      {props.list.map((item) => (
-        <Item key={item.objectID} item={item} />
-      ))}
-    </ul>
+const Search = ({ search, onSearch }) => (
+  <div>
+    <label htmlFor="search">Search: </label>
+    <input
+      id="search"
+      type="text"
+      value={search}
+      onChange={onSearch}
+    />
+  </div>
+  );
+
+const List = ({ list }) => (
+  <ul>
+    {list.map((item) => (
+      <Item key={item.objecID} item={item} />
+    ))}
+  </ul>
 );
 
-const Item = (props) => (
+const Item = ({ item }) => (
   <li>
     <span>
-      <a href={props.item.url}>{props.item.title}</a>
+      <a href={item.url}>{item.title}</a>
     </span>
-    <span>{props.item.author}</span>
-    <span>{props.item.num_comments}</span>
-    <span>{props.item.points}</span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
   </li>
 );
 
